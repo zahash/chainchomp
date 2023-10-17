@@ -37,3 +37,18 @@ where
 
     Err(E::syntax_error(pos, ctx))
 }
+
+pub fn many<T, E, Ast>(
+    tokens: &[T],
+    mut pos: usize,
+    parser: impl Fn(&[T], usize) -> Result<(Ast, usize), E>,
+) -> (Vec<Ast>, usize) {
+    let mut list = vec![];
+
+    while let Ok((ast, next_pos)) = parser(tokens, pos) {
+        list.push(ast);
+        pos = next_pos;
+    }
+
+    (list, pos)
+}
