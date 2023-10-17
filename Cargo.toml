@@ -1,6 +1,6 @@
 [package]
 name = "chainchomp"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["Zahash <zahash.z@gmail.com>"]
 description = "Tinyest Opinionated parser combinator library for Rust."

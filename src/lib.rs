@@ -2,10 +2,6 @@ pub trait Parser<T, E, Ast> {
     fn parse(&self, tokens: &[T], pos: usize) -> Result<(Ast, usize), E>;
 }
 
-pub trait SyntaxError<C> {
-    fn syntax_error(pos: usize, ctx: C) -> Self;
-}
-
 impl<T, E, ParsedValue, F, Ast> Parser<T, E, Ast> for F
 where
     ParsedValue: Into<Ast>,
@@ -19,15 +15,12 @@ where
     }
 }
 
-pub fn combine_parsers<T, E, C, Ast>(
+pub fn combine_parsers<T, E, Ast>(
     tokens: &[T],
     pos: usize,
     parsers: &[Box<dyn Parser<T, E, Ast>>],
-    ctx: C,
-) -> Result<(Ast, usize), E>
-where
-    E: SyntaxError<C>,
-{
+    e: E,
+) -> Result<(Ast, usize), E> {
     for parser in parsers {
         match parser.parse(tokens, pos) {
             Ok((ast, pos)) => return Ok((ast, pos)),
@@ -35,7 +28,7 @@ where
         };
     }
 
-    Err(E::syntax_error(pos, ctx))
+    Err(e)
 }
 
 pub fn many<T, E, Ast>(
