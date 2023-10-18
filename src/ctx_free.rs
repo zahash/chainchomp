@@ -45,3 +45,38 @@ pub fn many<T, E, Ast>(
 
     (list, pos)
 }
+
+pub fn many_delimited<T, E, Ast>(
+    tokens: &[T],
+    mut pos: usize,
+    parser: impl Fn(&[T], usize) -> Result<(Ast, usize), E>,
+    delimiter: &T,
+) -> (Vec<Ast>, usize)
+where
+    T: PartialEq,
+{
+    let mut list = vec![];
+
+    while let Ok((ast, next_pos)) = parser(tokens, pos) {
+        list.push(ast);
+        pos = next_pos;
+
+        match tokens.get(pos) {
+            Some(token) if token == delimiter => pos += 1,
+            _ => break,
+        };
+    }
+
+    (list, pos)
+}
+
+pub fn maybe<T, E, Ast>(
+    tokens: &[T],
+    pos: usize,
+    parser: impl Fn(&[T], usize) -> Result<(Ast, usize), E>,
+) -> (Option<Ast>, usize) {
+    match parser(tokens, pos) {
+        Ok((ast, pos)) => (Some(ast), pos),
+        Err(_) => (None, pos),
+    }
+}
