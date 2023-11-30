@@ -18,7 +18,7 @@ where
 pub fn combine_parsers<T, E, Ast>(
     tokens: &[T],
     pos: usize,
-    parsers: &[Box<dyn Parser<T, E, Ast>>],
+    parsers: &[&dyn Parser<T, E, Ast>],
     e: E,
 ) -> Result<(Ast, usize), E> {
     for parser in parsers {

@@ -19,7 +19,7 @@ pub fn combine_parsers<T, E, C, Ast>(
     tokens: &[T],
     pos: usize,
     ctx: &mut C,
-    parsers: &[Box<dyn Parser<T, E, C, Ast>>],
+    parsers: &[&dyn Parser<T, E, C, Ast>],
     e: E,
 ) -> Result<(Ast, usize), E> {
     for parser in parsers {
